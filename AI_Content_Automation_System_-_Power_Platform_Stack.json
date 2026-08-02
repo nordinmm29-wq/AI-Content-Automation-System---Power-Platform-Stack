@@ -1,0 +1,601 @@
+{
+  "name": "AI Content Automation System - Power Platform Stack",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        -96
+      ],
+      "id": "8c78a543-30e0-4205-aa6f-c93b1a676391",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2dbf5310-26bd-4677-9f0f-084a7043bb37",
+              "name": "topic",
+              "value": "Automatización con IA",
+              "type": "string"
+            },
+            {
+              "id": "bc0acf01-4ca2-4401-9479-1e520799b2fe",
+              "name": "audience",
+              "value": "PYMES",
+              "type": "string"
+            },
+            {
+              "id": "4fdff15f-9d03-4681-904f-293f582c2a54",
+              "name": "platform",
+              "value": "Linkedin",
+              "type": "string"
+            },
+            {
+              "id": "e5b15cfb-2aa6-4246-ae6a-68e8c4c2b8c7",
+              "name": "tone",
+              "value": "profesional y moderno",
+              "type": "string"
+            },
+            {
+              "id": "59d66aa9-1ec3-4558-b891-d5c152752da6",
+              "name": "lenguage",
+              "value": "español",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -176,
+        -96
+      ],
+      "id": "ea5b9f35-c115-4c01-8499-30c217fa4be9",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5-nano",
+          "mode": "list",
+          "cachedResultName": "GPT-5-NANO"
+        },
+        "responses": {
+          "values": [
+            {
+              "role": "system",
+              "content": "Eres un experto en marketing e contenido para Linkedin."
+            },
+            {
+              "content": "=Genera un post profesional para Linkedin.\n\nTema: {{ $json.topic }}\nAudiencia: {{ $json.audience }}\n\nDebe incluir:\n- Hook inicial\n- Contenido claro\n- CTA final\n\nTone: {{ $json.tone }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        48,
+        -96
+      ],
+      "id": "787545e1-fae5-4b62-94d8-cdfc96632d11",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": "phFuFxX6MoveqweM",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5-nano",
+          "mode": "list",
+          "cachedResultName": "GPT-5-NANO"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=Genera 10 hashtags profesionales y relevantes para este contenido de Linkedin.\n\nContenido:  {{ $json.output[0].content[0].text }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        400,
+        -96
+      ],
+      "id": "6e7169c8-1aff-43a9-b9ac-32783ea7285e",
+      "name": "Message a model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "phFuFxX6MoveqweM",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6a6ba4ec-5a01-485b-b93b-20c0c7785e0e",
+              "name": "title",
+              "value": "={{ $('Edit Fields').item.json.topic }}",
+              "type": "string"
+            },
+            {
+              "id": "76bddc41-18fe-45c8-8ec2-2c6c2115b43c",
+              "name": "content",
+              "value": "={{ $('Message a model').item.json.output[0].content[0].text }}",
+              "type": "string"
+            },
+            {
+              "id": "fee9f6c3-ae23-460d-a28d-b89765e23715",
+              "name": "hashtags",
+              "value": "={{ $json.output[0].content[0].text }}",
+              "type": "string"
+            },
+            {
+              "id": "11111764-c75e-41d4-addb-76d9bcca2685",
+              "name": "platform",
+              "value": "={{ $('Edit Fields').item.json.platform }}",
+              "type": "string"
+            },
+            {
+              "id": "f6eeed5a-2296-4f3e-aaad-f35759b3e99c",
+              "name": "status",
+              "value": "draft",
+              "type": "string"
+            },
+            {
+              "id": "41d1f031-747c-4ae8-8bee-73140e1c8d2b",
+              "name": "publis_now",
+              "value": false,
+              "type": "boolean"
+            },
+            {
+              "id": "58ad33e1-182d-4f8b-8ee1-d1da93a32951",
+              "name": "created_at",
+              "value": "={{ $now }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        752,
+        -96
+      ],
+      "id": "50bc94e3-a037-4684-a071-16cf4d1efe82",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  item.json.content = \n    item.json.content.substring(0, 1950);\n  return item;\n}\n              )"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        960,
+        -96
+      ],
+      "id": "17d43e20-f488-4bd1-91f6-2c997a409bfa",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "url": "https://prod-xx.westeurope.logic.azure.com/POWER_AUTOMATE_DATAVERSE_CREATE_CONTENT",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "title",
+              "value": "={{ $json.title }}"
+            },
+            {
+              "name": "content",
+              "value": "={{ $json.content }}"
+            },
+            {
+              "name": "hashtags",
+              "value": "={{ $json.hashtags }}"
+            },
+            {
+              "name": "platform",
+              "value": "={{ $json.platform }}"
+            },
+            {
+              "name": "status",
+              "value": "={{ $json.status }}"
+            },
+            {
+              "name": "publish_date",
+              "value": "={{ $now.plus({days:1}) }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1184,
+        -96
+      ],
+      "id": "d66314d8-36e4-48ef-90be-089bb16b3826",
+      "name": "Crear fila en Dataverse (Content Calendar)"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "c1d8489d-5343-465e-8f89-bc4f6eb7d49d",
+              "leftValue": "={{ $json.publish_now }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1616,
+        -96
+      ],
+      "id": "a1106293-ea7c-4843-be00-47f5fe86a1af",
+      "name": "If (¿Publicar ahora?)"
+    },
+    {
+      "parameters": {
+        "amount": 1,
+        "unit": "days"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1824,
+        0
+      ],
+      "id": "2ad9e62f-2e28-4827-9743-b3c2a30a2589",
+      "name": "Wait (1 día)",
+      "webhookId": "8702732a-b84f-43bb-9c6c-73c58c296697"
+    },
+    {
+      "parameters": {
+        "url": "https://prod-xx.westeurope.logic.azure.com/POWER_AUTOMATE_DATAVERSE_QUERY_DRAFTS",
+        "method": "GET",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        2032,
+        0
+      ],
+      "id": "e2afa9db-3f8b-4280-a9ab-f0d87155717f",
+      "name": "Consultar borradores en Dataverse (Status = Draft)"
+    },
+    {
+      "parameters": {
+        "url": "https://prod-xx.westeurope.logic.azure.com/POWER_AUTOMATE_TEAMS_PUBLISH_POST",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "content",
+              "value": "={{ $json.content }}"
+            },
+            {
+              "name": "hashtags",
+              "value": "={{ $json.hashtags }}"
+            },
+            {
+              "name": "published_at",
+              "value": "={{ $now.toISO() }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        2208,
+        0
+      ],
+      "id": "9888367d-41c0-46af-9e49-e68ff897d050",
+      "name": "Publicar post (Teams / Yammer Channel)"
+    },
+    {
+      "parameters": {
+        "url": "https://prod-xx.westeurope.logic.azure.com/POWER_AUTOMATE_TEAMS_PUBLISH_POST",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "content",
+              "value": "={{ $('Crear fila en Dataverse (Content Calendar)').item.json.content }}"
+            },
+            {
+              "name": "hashtags",
+              "value": "={{ $('Crear fila en Dataverse (Content Calendar)').item.json.hashtags }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1824,
+        -192
+      ],
+      "id": "ef1f2f4f-611a-4fa4-99f4-bf5baf7c1f78",
+      "name": "Publicar post inmediato (Teams / Yammer Channel)"
+    },
+    {
+      "parameters": {
+        "amount": 1,
+        "unit": "hours"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2032,
+        -192
+      ],
+      "id": "6e899e53-c56c-4d79-bbbe-ea5a06359309",
+      "name": "Wait1 (1 hora)",
+      "webhookId": "0be1e093-7367-46b4-b768-30d31f374164"
+    },
+    {
+      "parameters": {
+        "url": "https://prod-xx.westeurope.logic.azure.com/POWER_AUTOMATE_DATAVERSE_UPDATE_STATUS",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "status",
+              "value": "published"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        2208,
+        -192
+      ],
+      "id": "974c6b8c-d306-46a3-871f-b19233c134e0",
+      "name": "Actualizar estado en Dataverse (Publicado)"
+    },
+    {
+      "parameters": {
+        "url": "https://prod-xx.westeurope.logic.azure.com/POWER_AUTOMATE_DATAVERSE_UPDATE_STATUS",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "status",
+              "value": "published"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        2416,
+        0
+      ],
+      "id": "89d6c5b1-d683-460a-b1a1-b7b603b8212b",
+      "name": "Actualizar estado en Dataverse (Publicado)1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Message a model1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Crear fila en Dataverse (Content Calendar)": {
+      "main": [
+        [
+          {
+            "node": "If (¿Publicar ahora?)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If (¿Publicar ahora?)": {
+      "main": [
+        [
+          {
+            "node": "Publicar post inmediato (Teams / Yammer Channel)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait (1 día)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait (1 día)": {
+      "main": [
+        [
+          {
+            "node": "Consultar borradores en Dataverse (Status = Draft)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Crear fila en Dataverse (Content Calendar)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consultar borradores en Dataverse (Status = Draft)": {
+      "main": [
+        [
+          {
+            "node": "Publicar post (Teams / Yammer Channel)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publicar post inmediato (Teams / Yammer Channel)": {
+      "main": [
+        [
+          {
+            "node": "Wait1 (1 hora)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1 (1 hora)": {
+      "main": [
+        [
+          {
+            "node": "Actualizar estado en Dataverse (Publicado)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publicar post (Teams / Yammer Channel)": {
+      "main": [
+        [
+          {
+            "node": "Actualizar estado en Dataverse (Publicado)1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "0def53c3-f47f-4e2a-a8ca-e2f9d8a08fae",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "33821b72dae919503d680e3ddc300734d9ecf45f64776fd52838d87d5889b7be"
+  },
+  "id": "cfAlSg7Q34EYx9zX-poweradapt",
+  "tags": []
+}
